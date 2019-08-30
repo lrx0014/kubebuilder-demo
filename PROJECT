@@ -1,0 +1,7 @@
+version: "2"
+domain: k8s.io
+repo: github.com/lrx0014/kubebuilder-demo
+resources:
+- group: ships
+  version: v1beta1
+  kind: Sloop

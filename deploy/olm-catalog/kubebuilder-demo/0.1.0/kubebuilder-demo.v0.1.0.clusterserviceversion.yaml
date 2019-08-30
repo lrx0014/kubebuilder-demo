@@ -1,0 +1,84 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    capabilities: Basic Install
+  name: kubebuilder-demo.v0.1.0
+  namespace: olm
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - kind: Sloop
+      name: sloops.ships.k8s.io
+      version: v1beta1
+      displayName: kubebuilder-demo
+      description: kubebuilder-demo
+  description: Placeholder description
+  displayName: Kubebuilder Demo
+  install:
+    spec:
+      clusterPermissions:
+      - rules:
+        - apiGroups:
+          - ships.k8s.io
+          resources:
+          - sloops
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - ships.k8s.io
+          resources:
+          - sloops/status
+          verbs:
+          - get
+          - patch
+          - update
+        serviceAccountName: manager-role
+      deployments:
+      - name: controller-manager
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              control-plane: controller-manager
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                control-plane: controller-manager
+            spec:
+              containers:
+              - args:
+                - --enable-leader-election
+                command:
+                - /manager
+                image: controller:latest
+                name: manager
+                resources:
+                  limits:
+                    cpu: 100m
+                    memory: 30Mi
+                  requests:
+                    cpu: 100m
+                    memory: 20Mi
+              terminationGracePeriodSeconds: 10
+    strategy: deployment
+  installModes:
+  - supported: true
+    type: OwnNamespace
+  - supported: true
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  maturity: alpha
+  provider: {}
+  version: 0.1.0
